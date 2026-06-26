@@ -1,0 +1,47 @@
+
+team_name: "Residual Complex"  
+
+primary_contact:
+  name: "Mohit Chaudhary"
+  email: "mohitchaudhary3523@gmail.com"   
+  phone: "+91-7042561173"      
+
+team_members:
+  - name: "Mohit Chaudhary"
+    email: "mohitchaudhary3523@gmail.com"
+    role: "Team Leader"       
+
+github_repo: "https://github.com/YOUR_USERNAME/YOUR_REPO"
+
+sandbox_link: "https://huggingface.co/spaces/MohitML10/Intelligent_Candidate_Discovery"
+
+reproduce_command: "python rank.py --candidates ./candidates.jsonl.gz --out ./submission.csv"
+
+compute:
+  platform: "Local Linux workstation, Ryzen 7, Fedora 44"
+  cpu_cores: 16
+  ram_gb: 14
+  python_version: "3.14.5"
+  os: "Fedora Linux 44"
+  uses_gpu_for_inference: false
+  has_network_during_ranking: false
+  pre_computation_required: false
+  pre_computation_time_minutes: 0
+
+ai_tools_used:
+  - "Claude"
+  - "OpenAI Codex CLI"
+
+ai_usage_summary: |
+  Used Claude for architecture design, scoring logic decisions, and writing the PRD that directed implementation. Used OpenAI Codex CLI (gpt-5.5) to implement rank.py from that PRD. No candidate data was fed to any LLM. All scoring runs locally via pure Python stdlib with zero network calls during ranking.
+
+methodology_summary: |
+  Two-pass pure Python stdlib pipeline over candidates.jsonl.gz. Pass 1 streams all 100K profiles, applies a role fit gate (eliminates pure non-technical careers, services-only backgrounds, CV/speech domains with no IR work) and honeypot detection (expert proficiency with zero duration months, impossible tenure lengths), and builds a corpus-wide IDF table from career description text. Pass 2 scores every eligible candidate across four components: skills match weighted by endorsement count, proficiency, and usage duration (0.30); career-description TF-IDF measuring how central retrieval and search work is to actual job history (0.10); career trajectory scoring product-company tenure in relevant roles, experience range, title fit, and location (0.25); and education tier (0.05). A behavioral multiplier (0.4 to 1.2x) is applied based on platform signals including open to work status, recruiter response rate, interview completion rate, notice period, and GitHub activity. Top 100 selected via min-heap, normalized to 0-1, with per-candidate reasoning generated directly from field values. Runtime 42 seconds, peak RAM 1.66GB.
+
+declarations:
+  read_submission_spec: true
+  code_is_original_work: true
+  no_collusion: true
+  honeypot_check_done: true
+  reproduction_tested: true
+
